@@ -4,9 +4,13 @@ import jangl.io.Window;
 import jangl.time.Clock;
 
 public class PrisonerRiddle {
+    private static final int PRISONERS = 100;
+
     public void run() {
         try (Boxes boxes = new Boxes(new ScreenCoords(-1, -1f), 2, 2f, 10, 10)) {
-            Prisoner prisoner = new Prisoner(boxes, 1, 0.2);
+            int prisonerIndex = 1;
+            Prisoner prisoner = new Prisoner(boxes, prisonerIndex, 0.01);
+
 
             while (Window.shouldRun()) {
                 Window.clear();
@@ -15,8 +19,13 @@ public class PrisonerRiddle {
                     prisoner.update();
                 } else if (prisoner.getStatus() == Status.FAILED) {
                     Window.setClearColor(1, 0, 0, 1);
-                } else if (prisoner.getStatus() == Status.SUCCEEDED) {
+                } else if (prisoner.getStatus() == Status.SUCCEEDED && prisonerIndex < PRISONERS) {
+                    prisonerIndex++;
+                    prisoner = new Prisoner(boxes, prisonerIndex, 0.01);
+                    boxes.hideAll();
+                } else if (prisonerIndex >= PRISONERS) {
                     Window.setClearColor(0, 1, 0, 1);
+                    boxes.showAll();
                 }
 
                 boxes.draw();

@@ -20,7 +20,7 @@ public class Prisoner {
     }
 
     private void goToNextBox() {
-        this.boxToGoTo = this.boxes.revealBox(this.boxToGoTo);
+        this.boxToGoTo = this.boxes.showBox(this.boxToGoTo);
         attempts++;
 
         if (this.boxToGoTo == prisonerNumber) {
@@ -37,8 +37,8 @@ public class Prisoner {
     public void update() {
         this.timeToUpdate += Clock.getTimeDelta();
 
-        if (timeToUpdate > updateTime) {
-            timeToUpdate = 0;
+        while (timeToUpdate > updateTime) {
+            timeToUpdate -= updateTime;
             this.goToNextBox();
         }
     }

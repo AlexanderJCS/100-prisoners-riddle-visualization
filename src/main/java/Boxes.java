@@ -1,6 +1,5 @@
 import jangl.coords.PixelCoords;
 import jangl.coords.ScreenCoords;
-import jangl.graphics.font.parser.Font;
 import jangl.shapes.Rect;
 
 import java.util.ArrayList;
@@ -52,14 +51,20 @@ public class Boxes implements AutoCloseable {
         }
     }
 
-    public int revealBox(int boxID) {
-        boxes[boxID - 1].show();
+    public int showBox(int boxID) {
+        this.boxes[boxID - 1].show();
         return boxes[boxID - 1].getContainingNumber();
     }
 
     public void hideAll() {
-        for (Box box : boxes) {
+        for (Box box : this.boxes) {
             box.hide();
+        }
+    }
+
+    public void showAll() {
+        for (Box box : this.boxes) {
+            box.show();
         }
     }
 
