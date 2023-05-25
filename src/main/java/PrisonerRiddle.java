@@ -24,7 +24,7 @@ public class PrisonerRiddle {
             prisoner.update();
 
         } else if (prisoner.getStatus() == Status.FAILED) {
-            Window.setClearColor(1, 0, 0, 1);
+            Window.setClearColor(0.7f, 0, 0, 1);
 
         } else if (prisoner.getStatus() == Status.SUCCEEDED && prisonerIndex < PRISONERS) {
             prisonerIndex++;
@@ -35,7 +35,7 @@ public class PrisonerRiddle {
 
         } else if (prisonerIndex >= PRISONERS) {
             this.releasedText.setText("Prisoners released: " + prisonerIndex);
-            Window.setClearColor(0, 1, 0, 1);
+            Window.setClearColor(0, 0.7f, 0, 1);
             this.boxes.showAll();
         }
     }
