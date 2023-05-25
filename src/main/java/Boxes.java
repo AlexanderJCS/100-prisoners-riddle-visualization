@@ -1,7 +1,6 @@
 import jangl.coords.PixelCoords;
 import jangl.coords.ScreenCoords;
 import jangl.graphics.font.parser.Font;
-import jangl.io.Window;
 import jangl.shapes.Rect;
 
 import java.util.ArrayList;
@@ -9,48 +8,43 @@ import java.util.Collections;
 import java.util.List;
 
 public class Boxes implements AutoCloseable {
-    private final Font font;
     private final Box[] boxes;
 
-    public Boxes(int width, int height) {
-        this.font = new Font("src/main/resources/arial/arial.fnt", "src/main/resources/arial/arial.png");
-        this.boxes = new Box[width * height];
-
-        this.generateBoxes(width, height);
+    public Boxes(ScreenCoords center, float screenWidth, float screenHeight, int boxesWidth, int boxesHeight) {
+        this.boxes = new Box[boxesWidth * boxesHeight];
+        this.generateBoxes(center, screenWidth, screenHeight, boxesWidth, boxesHeight);
     }
 
-    private void generateBoxes(int width, int height) {
-        float xPixelsPerBox = (float) Window.getScreenWidth() / width;
-        float yPixelsPerBox = (float) Window.getScreenHeight() / height;
-
-        float xScreenDistPerBox = PixelCoords.distXtoScreenDist(xPixelsPerBox);
-        float yScreenDistPerBox = PixelCoords.distYtoScreenDist(yPixelsPerBox);
+    private void generateBoxes(ScreenCoords center, float screenWidth, float screenHeight, int boxesWidth, int boxesHeight) {
+        float xScreenDistPerBox = screenWidth / boxesWidth;
+        float yScreenDistPerBox = screenHeight / boxesHeight;
 
         float xSpace = PixelCoords.distXtoScreenDist(5);
         float ySpace = PixelCoords.distYtoScreenDist(5);
 
-        List<Integer> boxValues = new ArrayList<>(width * height);
-        for (int i = 1; i <= width * height; i++) {
+        // Generate the box numbers
+        List<Integer> boxValues = new ArrayList<>(boxesWidth * boxesHeight);
+        for (int i = 1; i <= boxesWidth * boxesHeight; i++) {
             boxValues.add(i);
         }
 
         Collections.shuffle(boxValues);
 
+        // Generate the boxes
         int boxIndex = 0;
-        for (int w = 0; w < width; w++) {
-            for (int h = 0; h < height; h++) {
+        for (int w = 0; w < boxesWidth; w++) {
+            for (int h = 0; h < boxesHeight; h++) {
                 Rect rect = new Rect(
                         new ScreenCoords(
-                                xScreenDistPerBox * w - 1,
-                                yScreenDistPerBox * h - 1 + yScreenDistPerBox
+                                xScreenDistPerBox * w + center.x,
+                                yScreenDistPerBox * h + yScreenDistPerBox + center.y
                         ),
                         xScreenDistPerBox - xSpace,
                         yScreenDistPerBox - ySpace
                 );
 
                 this.boxes[boxIndex] = new Box(
-                        rect, this.font,
-                        boxIndex + 1, boxValues.remove(0)
+                        rect, boxIndex + 1, boxValues.remove(0)
                 );
 
                 boxIndex++;
@@ -63,6 +57,12 @@ public class Boxes implements AutoCloseable {
         return boxes[boxID - 1].getContainingNumber();
     }
 
+    public void hideAll() {
+        for (Box box : boxes) {
+            box.hide();
+        }
+    }
+
     public void draw() {
         for (Box box : boxes) {
             box.draw();
@@ -71,8 +71,6 @@ public class Boxes implements AutoCloseable {
 
     @Override
     public void close() {
-        this.font.close();
-
         for (Box box : boxes) {
             box.close();
         }

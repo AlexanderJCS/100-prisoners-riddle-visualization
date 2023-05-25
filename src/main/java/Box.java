@@ -12,7 +12,7 @@ public class Box implements AutoCloseable {
     private ColorShader color;
     private boolean shown;
 
-    public Box(Rect rect, Font font, int number, int containingNumber) {
+    public Box(Rect rect, int number, int containingNumber) {
         this.shown = false;
         this.rect = rect;
 
@@ -22,7 +22,7 @@ public class Box implements AutoCloseable {
         ScreenCoords rectCenter = this.rect.getCenter();
 
         this.text = new Text(
-                font, String.valueOf(number),
+                Consts.FONT, String.valueOf(number),
                 new ScreenCoords(rectCenter.x - this.rect.getWidth() / 2, rectCenter.y + this.rect.getHeight() / 2),
                 this.rect.getHeight() / 3
         );
